@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Text Extraction</title>
+    <link rel="stylesheet" type="text/css" href="static\style.css"/>
 </head>
 <body>
-    <h1>Image Text Extraction</h1>
-    <form id="upload-form" enctype="multipart/form-data">
-        <input type="file" id="image-upload" name="image" accept="image/*">
-        <button type="submit">Upload Image</button>
+    <div class="A">
+        <h1>Captcha OCR</h1>
+    </div>
+    <form class = "A" id="upload-form" enctype="multipart/form-data">
+        <div class="A">
+            <input type="file" id="image-upload" name="image" accept="image/*">
+            <button type="submit">Upload Image</button>
+        </div>
     </form>
     <div id="result"></div>
     <div id="image-container"></div>
