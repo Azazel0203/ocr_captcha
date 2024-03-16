@@ -1,8 +1,8 @@
 artifact
-data
 experiment
 models
 ocr_captcha.egg-info
 test.py
 logs
 mlruns
+/data
