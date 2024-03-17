@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>OCR CAPTCHA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style1.css" />
+</head>
+
+<body>
+    <h1>Captcha Detection</h1>
+    <div>
+        <form class="frm" id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="image-upload" name="image" accept="image/*">
+            <button class="upload-btn" type="submit">Upload Image</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <div id="image-container">
+            <img src="static\Image.jpg" alt="Picture">
+        </div>
+        
+        <div class="typed-out" id="result">Result to be displayed..</div>
+        
+    </div>
+
+    
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById('image-upload');
+            formData.append('image', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                document.getElementById('result').innerText = data.text;
+                // div.classList.remove("typed-out"); // Remove class
+                // void div.offsetWidth; // Trigger reflow
+                // div.classList.add("typed-out");
+                displayImage(fileInput.files[0]);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        function displayImage(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.width = 400; // Adjust im/age size as needed
+                document.getElementById('image-container').innerHTML = '';
+                document.getElementById('image-container').appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+
+</html>
