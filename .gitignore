@@ -7,3 +7,5 @@ logs
 mlruns
 data
 checkpoints_80percent
+remote_repo
+

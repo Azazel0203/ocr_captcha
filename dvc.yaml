@@ -1,0 +1,18 @@
+stages:
+  training_stage:
+    cmd: python src\pipline\training_pipeline.py
+    deps:
+      - src/pipeline/training_pipeline.py
+      - src/components/data_ingestion.py
+      - src/components/model_trainer.py
+    outs:
+     - artifact/char_to_num.json
+     - artifact/model.weights.h5
+     - artifact/num_to_char.json
+     - artifact/raw_img_path.csv
+     - artifact/raw_labels.csv
+     - artifact/test_x.csv
+     - artifact/test_y.csv
+     - artifact/train_x.csv
+     - artifact/train_y.csv
+     - artifact/unique_char.csv
