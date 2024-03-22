@@ -1,0 +1,6 @@
+logs
+checkpoints_80percent
+models
+template.py
+test.py
+README.md

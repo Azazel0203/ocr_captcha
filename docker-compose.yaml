@@ -1,0 +1,8 @@
+version: '3'
+services:
+  application:
+    build: .
+    image: ocr_captcha
+    container_name: ocr_captcha_container
+    ports:
+      - "8080:8080"
