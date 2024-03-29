@@ -7,6 +7,7 @@ mlflow
 dvc
 pendulum
 apache-airflow
+transformers
 
 pytest==7.1.3
 tox==3.25.1

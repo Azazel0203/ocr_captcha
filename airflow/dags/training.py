@@ -4,7 +4,7 @@ import json
 from textwrap import dedent
 import pendulum
 from airflow import DAG
-from airflow.operators.python import pythonOperator
+from airflow.operators.python import PythonOperator
 from src.ocr_captcha.pipeline.training_pipeline import TrainingPipeline
 
 t_pipe = TrainingPipeline(False, "model.weights.h5")
@@ -51,7 +51,7 @@ with DAG(
         print("To be implemented")
     
     # Task Instances
-    data_ingestion_task = pythonOperator(
+    data_ingestion_task = PythonOperator(
         task_id = "data_ingestion",
         python_callable = data_ingestion,
     )
@@ -62,7 +62,7 @@ with DAG(
         """
     )
     
-    model_trainer_task = pythonOperator(
+    model_trainer_task = PythonOperator(
         task_id = "model_trainer",
         python_callable = model_trainer,
     )
@@ -72,7 +72,7 @@ with DAG(
         This task trains a machine learning model
         """
     )
-    push_to_azure_task = pythonOperator(
+    push_to_azure_task = PythonOperator(
         task_id="push_to_azure",
         python_callable=push_data_to_azure,
     )

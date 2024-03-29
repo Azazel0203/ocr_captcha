@@ -1,8 +1,19 @@
 version: '3'
 services:
-  application:
-    build: .
-    image: ocr_captcha
-    container_name: ocr_captcha_container
+  airflow:
+    build:
+      context: ./
+      dockerfile: Dockerfile.airflow
+    image: airflow_part
+    container_name: ocr_captcha_airflow
     ports:
       - "8080:8080"
+  
+  flaskapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile.flask
+    image: flask_part
+    container_name: ocr_captcha_flask
+    ports:
+      - "8000:8000"

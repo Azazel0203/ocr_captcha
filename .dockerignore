@@ -4,3 +4,5 @@ models
 template.py
 test.py
 README.md
+safe_tensors
+azure_stuff.txt

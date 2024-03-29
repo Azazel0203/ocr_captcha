@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify
 from PIL import Image
 import os
+from pathlib import Path
 
-from src.pipeline.prediction_pipeline import PredictionPipline
+from src.ocr_captcha.pipeline.prediction_pipeline import PredictionPipline
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return open('templates\index2.html').read()
+    return open(Path('templates/index2.html')).read()
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -33,7 +34,7 @@ def upload():
 
 def perform_ocr(image_path):
     print("In ocr")
-    obj = PredictionPipline('artifact\\model.weights.h5')
+    obj = PredictionPipline(Path('artifact/model.weights.h5'))
     print("loaded Model")
     text = obj.predict(image_path)
     print(text)

@@ -8,4 +8,5 @@ mlruns
 data
 checkpoints_80percent
 remote_repo
-
+azure_stuff.txt
+safe_tensors

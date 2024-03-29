@@ -1,24 +1,24 @@
 import pandas as pd
 import numpy as np
-from src.logger.logging import logging
-from src.exception.exception import customexception
+from src.ocr_captcha.logger.logging import logging
+from src.ocr_captcha.exception.exception import customexception
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import shutil
 import sys
 from pathlib import Path
 from dataclasses import dataclass
-from src.utils.utils import encode_single_sample_training
+from src.ocr_captcha.utils.utils import encode_single_sample_training
 import tensorflow as tf
 from functools import partial
 from keras import layers
 import pickle
-from src.utils.utils import build_model
+from src.ocr_captcha.utils.utils import build_model
 import keras
 from tensorflow.keras.callbacks import ModelCheckpoint
 from keras.models import load_model
 import json
-from src.utils.utils import save_object
+from src.ocr_captcha.utils.utils import save_object
 
 
 
@@ -139,10 +139,10 @@ class ModelTrainer:
 
 if __name__ == '__main__':
     trainer = ModelTrainer(100, 200, 32)
-    train_path_x = Path("E:\\ML\\ocr_captcha\\artifact\\train_x.csv")
-    train_path_y= Path("E:\\ML\\ocr_captcha\\artifact\\train_y.csv")
-    test_path_x = Path("E:\\ML\\ocr_captcha\\artifact\\test_x.csv")
-    test_path_y = Path("E:\\ML\\ocr_captcha\\artifact\\test_y.csv")
-    unique_chars = Path("E:\\ML\\ocr_captcha\\artifact\\unique_char.csv")
+    train_path_x = Path("artifact/train_x.csv")
+    train_path_y= Path("artifact/train_y.csv")
+    test_path_x = Path("artifact/test_x.csv")
+    test_path_y = Path("artifact/test_y.csv")
+    unique_chars = Path("artifact/unique_char.csv")
     model_path = trainer.initate_model_training(train_path_x, train_path_y, test_path_x, test_path_y, unique_chars)
             

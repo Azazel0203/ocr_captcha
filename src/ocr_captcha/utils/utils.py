@@ -8,8 +8,8 @@ from tensorflow.python.framework.sparse_tensor import SparseTensor
 from typing import Dict, Union
 from keras.src.models.functional import Functional
 from typing import Tuple, List
-from src.logger.logging import logging
-from src.exception.exception import customexception
+from src.ocr_captcha.logger.logging import logging
+from src.ocr_captcha.exception.exception import customexception
 import os
 import pickle
 import sys

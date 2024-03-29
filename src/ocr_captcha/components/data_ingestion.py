@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
-from src.logger.logging import logging
-from src.exception.exception import customexception
+from src.ocr_captcha.logger.logging import logging
+from src.ocr_captcha.exception.exception import customexception
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import sys
 from pathlib import Path
 from dataclasses import dataclass
-from src.utils.utils import split_data
+from src.ocr_captcha.utils.utils import split_data
 import joblib
 
 
