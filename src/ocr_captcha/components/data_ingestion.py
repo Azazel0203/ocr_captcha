@@ -1,25 +1,24 @@
 import pandas as pd
 import numpy as np
-from src.ocr_captcha.logger.logging import logging
-from src.ocr_captcha.exception.exception import customexception
-import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import sys
+import os
 from pathlib import Path
 from dataclasses import dataclass
 from src.ocr_captcha.utils.utils import split_data
-import joblib
+from src.ocr_captcha.logger.logging import logging
+from src.ocr_captcha.exception.exception import customexception
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 
 @dataclass
 class DataIngestionConfig:
-    raw_image_path:str = os.path.join("artifact", "raw_img_path.csv")
+    raw_image_path: str = os.path.join("artifact", "raw_img_path.csv")
     raw_labels: str = os.path.join("artifact", "raw_labels.csv")
-    train_data_path_x:str = os.path.join("artifact", "train_x.csv")
-    train_data_path_y:str = os.path.join("artifact", "train_y.csv")
-    test_data_path_x:str = os.path.join("artifact", "test_x.csv")
-    test_data_path_y:str = os.path.join("artifact", "test_y.csv")
-    unique_charachters:str = os.path.join("artifact", "unique_char.csv")
+    train_data_path_x: str = os.path.join("artifact", "train_x.csv")
+    train_data_path_y: str = os.path.join("artifact", "train_y.csv")
+    test_data_path_x: str = os.path.join("artifact", "test_x.csv")
+    test_data_path_y: str = os.path.join("artifact", "test_y.csv")
+    unique_charachters: str = os.path.join("artifact", "unique_char.csv")
     
 
 class DataIngestion:
