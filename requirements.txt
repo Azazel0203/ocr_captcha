@@ -1,11 +1,10 @@
 flask
-tensorflow_addons
-numpy
-pandas
-tensorflow
-keras
-pillow
-flask
+# tensorflow_addons
+# numpy
+# pandas
+# tensorflow
+# keras
+# pillow
 # mlflow
 # dvc
 # pendulum
@@ -17,4 +16,4 @@ flask
 # black==22.8.0
 # mypy==0.971
 
--e .
+# -e .
