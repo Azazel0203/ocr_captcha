@@ -1,13 +1,7 @@
 flask
-tensorflow_addons
-numpy
-pandas
 tensorflow
+pandas
 keras
 pillow
-mlflow
-dvc
-pendulum
-apache-airflow
 
 -e .
