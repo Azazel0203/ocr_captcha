@@ -8,7 +8,7 @@ dvc
 pendulum
 apache-airflow
 transformers
-types-pandas
+
 
 pytest==7.1.3
 tox==3.25.1
