@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy container app to Azure Web App - aadocr
 
 on:
@@ -10,17 +7,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: 'ubuntu-latest'
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest] 
+        python-version: ["3.8", "3.9"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest tox tox-gh-actions
+        pip install -r requirements_dev.txt
+    - name: Test with tox
+      run: tox
+
+  build-and-deploy-container:
+    runs-on: 'ubuntu-latest'
+    needs: build-and-test
+
+    steps:
+    - uses: actions/checkout@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
     - name: Log in to registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: https://captchaocr.azurecr.io/
         username: ${{ secrets.AzureAppService_ContainerUsername_d6bd5132974749f0a76fc6d17b3791c0 }}
@@ -35,7 +54,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-and-deploy-container
     environment:
       name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -43,7 +62,7 @@ jobs:
     steps:
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v3
       with:
         app-name: 'aadocr'
         slot-name: 'production'
