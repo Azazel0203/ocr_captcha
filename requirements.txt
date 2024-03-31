@@ -1,6 +1,5 @@
 flask
 tensorflow
-pandas
 keras
 pillow
 

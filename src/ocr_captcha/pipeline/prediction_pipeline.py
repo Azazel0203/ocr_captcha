@@ -7,7 +7,6 @@ from src.ocr_captcha.exception.exception import customexception
 from keras.models import load_model
 import keras
 from keras.src.layers.preprocessing.string_lookup import StringLookup
-import pandas as pd
 from src.ocr_captcha.utils.utils import build_model, generate_image_id, encode_single_sample_testing, decode_batch_predictions
 import numpy as np
 from pathlib import Path
