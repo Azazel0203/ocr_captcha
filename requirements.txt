@@ -1,19 +1,19 @@
-flask
-tensorflow_addons
-numpy
-pandas
-tensorflow
-keras
-pillow
-mlflow
-dvc
-pendulum
-apache-airflow
+# flask
+# tensorflow_addons
+# numpy
+# pandas
+# tensorflow
+# keras
+# pillow
+# mlflow
+# dvc
+# pendulum
+# apache-airflow
 
-pytest
-tox
-flake8
-black
-mypy
+# pytest
+# tox
+# flake8
+# black
+# mypy
 
 -e .
