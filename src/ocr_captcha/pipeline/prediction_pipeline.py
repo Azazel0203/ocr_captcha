@@ -32,7 +32,6 @@ class PredictionPipline:
             prediction_model = keras.models.Model(model.input[0], model.get_layer(name="dense2").output)
             ids = generate_image_id()
             to_model = encode_single_sample_testing(img, 100, 200, ids)
-            
             # Predict
             batch_input = np.expand_dims(to_model['image'], axis=0)
             preds = prediction_model.predict(batch_input)
@@ -48,7 +47,7 @@ class PredictionPipline:
 
 if __name__ == '__main__':
     obj = PredictionPipline(Path('artifact/model.weights.h5'))
-    image_path = Path('data/test_images_mlware/test_images/test-100.png')
+    image_path = str(Path('data/test_images_mlware/test_images/test-100.png'))
     text = obj.predict(image_path)
     print(text)
 
