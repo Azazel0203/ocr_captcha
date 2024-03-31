@@ -19,13 +19,13 @@ class DataIngestionConfig:
     test_data_path_x: str = os.path.join("artifact", "test_x.csv")
     test_data_path_y: str = os.path.join("artifact", "test_y.csv")
     unique_charachters: str = os.path.join("artifact", "unique_char.csv")
-    
+
 
 class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
 
-    def initiate_data_ingestion (self):
+    def initiate_data_ingestion(self):
         logging.info("Starting data ingestion")
         try:
             logging.info("Reading The data from the folders...")
@@ -87,6 +87,7 @@ class DataIngestion:
             logging.info()
             raise customexception(e, sys)
 
+
 if __name__ == '__main__':
-    obj=DataIngestion()
+    obj = DataIngestion()
     obj.initiate_data_ingestion()

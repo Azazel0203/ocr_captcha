@@ -3,7 +3,7 @@ import tensorflow as tf
 from keras.src.layers.preprocessing.string_lookup import StringLookup
 from keras import layers
 import keras
-from tensorflow.python.framework.ops import SymbolicTensor, EagerTensor
+from tensorflow.python.framework.ops import SymbolicTensor
 from tensorflow.python.framework.sparse_tensor import SparseTensor
 from typing import Dict, Union
 from keras.src.models.functional import Functional
@@ -21,7 +21,7 @@ def generate_image_id():
     return str(image_id)
 
 
-def split_data(images: np.ndarray, labels: np.ndarray, train_size: float = 0.8, shuffle: bool =True) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def split_data(images: np.ndarray, labels: np.ndarray, train_size: float = 0.8, shuffle: bool = True) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     # 1. Get the total size of the dataset
     size = len(images)
     # 2. Make an indices array and shuffle it, if required
@@ -35,7 +35,8 @@ def split_data(images: np.ndarray, labels: np.ndarray, train_size: float = 0.8, 
     x_valid, y_valid = images[indices[train_samples:]], labels[indices[train_samples:]]
     return x_train, x_valid, y_train, y_valid
 
-def encode_single_sample_training(img_path: str, label: str, img_height: int, img_width: int, char_to_num:StringLookup) -> Dict[str, Union[tf.Tensor, tf.Tensor]]:
+
+def encode_single_sample_training(img_path: str, label: str, img_height: int, img_width: int, char_to_num: StringLookup) -> Dict[str, Union[tf.Tensor, tf.Tensor]]:
     # 1. Read image
     img = tf.io.read_file(img_path)
     # 2. Decode and convert to grayscale
@@ -53,14 +54,16 @@ def encode_single_sample_training(img_path: str, label: str, img_height: int, im
     # 7. Return a dict as our model is expecting two inputs
     return {"image": img, "label": label}
 
+
 def ctc_label_dense_to_sparse(labels: SymbolicTensor, label_lengths: SymbolicTensor) -> SparseTensor:
-    label_shape = tf.shape(labels) # B, T, C
+    label_shape = tf.shape(labels)  # B, T, C
     # print("label_shape:", label_shape)
     num_batches = tf.stack([label_shape[0]])
     # print("num_batches:", num_batches)
     max_num_labels = tf.stack([label_shape[1]])
     # print("max_num_labels:", max_num_labels)
-    def range_less_than(old_input, current_input):
+    
+    def range_less_than(old_input, current_input):  
         '''
         Creates a boolean mask for the label_lengths we need to pay attention to
         '''
@@ -93,6 +96,7 @@ def ctc_label_dense_to_sparse(labels: SymbolicTensor, label_lengths: SymbolicTen
         tf.cast(indices, tf.int64), vals_sparse, tf.cast(label_shape, tf.int64)
     )
 
+
 def ctc_batch_cost(y_true: SymbolicTensor, y_pred: SymbolicTensor, input_length: SymbolicTensor, label_length: SymbolicTensor) -> SymbolicTensor:
     label_length = tf.cast(tf.squeeze(label_length, axis=-1), tf.int32)
     # print(f"label_length: {label_length}")
@@ -111,7 +115,7 @@ def ctc_batch_cost(y_true: SymbolicTensor, y_pred: SymbolicTensor, input_length:
     '''
     Generating a concentrated sparse matrix
     '''
-    y_pred = tf.math.log(tf.transpose(y_pred, perm=[1, 0 ,2]) + keras.backend.epsilon())
+    y_pred = tf.math.log(tf.transpose(y_pred, perm=[1, 0, 2]) + keras.backend.epsilon())
     # print(f"y_pred: {y_pred}")
     '''
     Add a small value of epsilon before taking log...so as to not take the log of 0 by mistake
@@ -120,13 +124,12 @@ def ctc_batch_cost(y_true: SymbolicTensor, y_pred: SymbolicTensor, input_length:
     returns the actual loss value
     add a singleton dim to the output...so as to represent the batch size
     '''
-    return tf.expand_dims(tf.compat.v1.nn.ctc_loss(
-        inputs=y_pred, labels=sparse_labels, sequence_length=input_length
-        ), 1,
-    )
+    return tf.expand_dims(tf.compat.v1.nn.ctc_loss(inputs=y_pred, labels=sparse_labels, sequence_length=input_length), 1,
+                          )
+
 
 class CTCLayer(layers.Layer):
-    def __init__(self, trainable=True, name: str=None, dtype=None):
+    def __init__(self, trainable = True, name: str = None):
         super().__init__(name=name)
         self.trainable = trainable
         self.loss_fn = ctc_batch_cost
@@ -143,7 +146,7 @@ class CTCLayer(layers.Layer):
         self.add_loss(loss)
         # At test time, just return the computed predictions
         return y_pred
-    
+
     def get_config(self):
         config = super().get_config()
         config.update({'trainable': self.trainable})
@@ -161,7 +164,7 @@ def build_model(img_width: int, img_height: int, char_to_num: StringLookup) -> F
     x = layers.Conv2D(128, (3, 3), activation="relu", kernel_initializer="he_normal", padding="same", name="conv2",)(x)
     x = layers.MaxPooling2D((2, 2), name="pool2")(x)
     # reshaping just in case
-    new_shape = ((img_width//4), (img_height//4) * 128) # each spatial location will be denoted by 64 values
+    new_shape = ((img_width // 4), (img_height // 4) * 128)  # each spatial location will be denoted by 64 values
     x = layers.Reshape(target_shape=new_shape, name="reshape")(x)
     x = layers.Dense(128, activation="relu", name="dense1")(x)
     x = layers.Dropout(0.2)(x)
@@ -201,6 +204,7 @@ def build_model(img_width: int, img_height: int, char_to_num: StringLookup) -> F
 #     with open("artifact\optimizer.json", "w") as opt_json_file:
 #         opt_json_file.write(optimizer.get_config())
 
+
 def encode_single_sample_testing(img_path: str, img_height: int, img_width: int, ids: str) -> Dict[str, Union[tf.Tensor, tf.Tensor]]:
     # 1. Read image
     img = tf.io.read_file(img_path)
@@ -217,6 +221,7 @@ def encode_single_sample_testing(img_path: str, img_height: int, img_width: int,
     # 6. Map the characters in label to numbers
     # 7. Return a dict as our model is expecting two inputs
     return {"image": img, "ids": ids}
+
 
 def ctc_decode(y_pred, input_length, greedy, beam_width=100, top_paths=1) -> Tuple[list, tf.Tensor]:
     input_shape = tf.shape(y_pred)
@@ -241,7 +246,8 @@ def ctc_decode(y_pred, input_length, greedy, beam_width=100, top_paths=1) -> Tup
         decoded_dense.append(tf.sparse.to_dense(sp_input=st, default_value=-1))
     return (decoded_dense, log_prob)
 
-def decode_batch_predictions(pred, max_length:int, num_to_char: StringLookup) -> List:
+
+def decode_batch_predictions(pred, max_length: int, num_to_char: StringLookup) -> List:
     input_len = np.ones(pred.shape[0]) * pred.shape[1]
     # results = ctc_decode(pred, input_length=input_len, greedy=True)[0][0][:, :max_length]
     results = ctc_decode(pred, input_length=input_len, greedy=True)[0][0][
@@ -262,7 +268,7 @@ def save_object(file_path, obj):
             pickle.dump(obj, file_obj)
     except Exception as e:
         raise customexception(e, sys)
-    
+
 
 def load_object(file_path):
     try:
@@ -271,20 +277,3 @@ def load_object(file_path):
     except Exception as e:
         logging.info("Exception Error occured in loading object")
         raise customexception(e, sys)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

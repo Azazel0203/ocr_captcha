@@ -14,10 +14,9 @@ from src.ocr_captcha.components.model_trainer import ModelTrainer
 
 
 class TrainingPipeline:
-    def __init__(self, pretrained:bool, model_path: str):
+    def __init__(self, pretrained: bool, model_path: str):
         self.pre_trained = pretrained
         self.model_path = os.path.join("artifact", model_path)
-    
     
     def start_data_ingestion(self):
         try:
@@ -32,7 +31,6 @@ class TrainingPipeline:
         except Exception as e:
             raise customexception(e, sys)
 
-        
     def initiate_training(self):
         try:
             with mlflow.start_run() as run:
@@ -49,16 +47,15 @@ class TrainingPipeline:
         except Exception as e:
             raise customexception(e, sys)
 
-        
     def train(self, train_data_path_x, train_data_path_y, test_data_path_x, test_data_path_y, unique_charachters):
         try:  
-                trainer = ModelTrainer(self.img_height, self.img_width, self.batch_size)
-                model_path, history = trainer.initate_model_training(train_data_path_x, train_data_path_y, test_data_path_x, test_data_path_y, unique_charachters, self.pre_trained, self.model_path)
-                mlflow.log_artifact(model_path)
-                for epoch, val_loss_value in enumerate(history.history["val_loss"]):
-                    mlflow.log_metric("val_loss_epoch_" + str(epoch), val_loss_value)
-                for epoch, loss_value in enumerate(history.history["loss"]):
-                    mlflow.log_metric("loss_epoch_" + str(epoch), loss_value)
+            trainer = ModelTrainer(self.img_height, self.img_width, self.batch_size)
+            model_path, history = trainer.initate_model_training(train_data_path_x, train_data_path_y, test_data_path_x, test_data_path_y, unique_charachters, self.pre_trained, self.model_path)
+            mlflow.log_artifact(model_path)
+            for epoch, val_loss_value in enumerate(history.history["val_loss"]):
+                mlflow.log_metric("val_loss_epoch_" + str(epoch), val_loss_value)
+            for epoch, loss_value in enumerate(history.history["loss"]):
+                mlflow.log_metric("loss_epoch_" + str(epoch), loss_value)
         except Exception as e:
             logging.info(e)
             raise customexception(e, sys)

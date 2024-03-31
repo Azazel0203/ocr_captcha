@@ -1,10 +1,7 @@
 import pandas as pd
-import numpy as np
 from src.ocr_captcha.logger.logging import logging
 from src.ocr_captcha.exception.exception import customexception
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-import shutil
 import sys
 from pathlib import Path
 from dataclasses import dataclass
@@ -16,26 +13,25 @@ import pickle
 from src.ocr_captcha.utils.utils import build_model
 import keras
 from tensorflow.keras.callbacks import ModelCheckpoint
-from keras.models import load_model
 import json
-from src.ocr_captcha.utils.utils import save_object
-
-
-
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 
 @dataclass 
 class ModelTrainerConfig:
-    trained_model_file_path: str = os.path.join('artifact','model.weights.h5')
-    char_to_num:str = os.path.join("artifact", "char_to_num.json")
-    num_to_char:str = os.path.join("artifact", "num_to_char.json")
+    trained_model_file_path: str = os.path.join('artifact', 'model.weights.h5')
+    char_to_num: str = os.path.join("artifact", "char_to_num.json")
+    num_to_char: str = os.path.join("artifact", "num_to_char.json")
+
+
 class ModelTrainer:
     def __init__(self, img_height, img_width, batch_size):
         self.model_trainer_config = ModelTrainerConfig()
         self.img_height = img_height
         self.img_width = img_width
         self.batch_size = batch_size
-    def initate_model_training(self, train_path_x, train_path_y, test_path_x, test_path_y, unique_chars, pre_trained: bool = False, model_path:str = None):
+    
+    def initate_model_training(self, train_path_x, train_path_y, test_path_x, test_path_y, unique_chars, pre_trained: bool = False, model_path: str = None):
         try:
             logging.info("Getting the train-test | feature-labels and unique charachters from the artifacts...")
             train_x = pd.read_csv(train_path_x, header=None)[0]
@@ -51,12 +47,6 @@ class ModelTrainer:
             )
             logging.info("Mappings created")
             logging.info("storing the mapping...")
-            
-            
-            
-            
-            
-            
             os.makedirs(os.path.dirname(os.path.join(self.model_trainer_config.char_to_num)), exist_ok=True)
             saved_data = {'config': char_to_num.get_config(), 'weights': char_to_num.get_weights()}
             with open(self.model_trainer_config.char_to_num, "w") as json_file:
@@ -65,15 +55,7 @@ class ModelTrainer:
             os.makedirs(os.path.dirname(os.path.join(self.model_trainer_config.num_to_char)), exist_ok=True)
             saved_data = {'config': num_to_char.get_config(), 'weights': num_to_char.get_weights()}
             with open(self.model_trainer_config.num_to_char, "w") as json_file:
-                json.dump(saved_data, json_file)
-
-            
-            
-            
-            
-            
-            
-            
+                json.dump(saved_data, json_file)     
             logging.info("saved the mappings")
             partial_encode_single_sample_training = partial(encode_single_sample_training, img_height=self.img_height, img_width=self.img_width, char_to_num=char_to_num)
             logging.info("Creating the training Dataset")
@@ -98,7 +80,7 @@ class ModelTrainer:
             else:
                 logging.info("GPU not found, proceding with CPU...")
                 model = build_model(self.img_width, self.img_height, char_to_num) 
-            if pre_trained==True:
+            if pre_trained:
                 model.load_weights(model_path)
                 logging.info("Starting with pre trained model")
             else:
@@ -140,7 +122,7 @@ class ModelTrainer:
 if __name__ == '__main__':
     trainer = ModelTrainer(100, 200, 32)
     train_path_x = Path("artifact/train_x.csv")
-    train_path_y= Path("artifact/train_y.csv")
+    train_path_y = Path("artifact/train_y.csv")
     test_path_x = Path("artifact/test_x.csv")
     test_path_y = Path("artifact/test_y.csv")
     unique_chars = Path("artifact/unique_char.csv")

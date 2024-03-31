@@ -1,20 +1,21 @@
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import numpy as np
+from pathlib import Path
 import sys
 import json
+import keras
 from src.ocr_captcha.logger.logging import logging
 from src.ocr_captcha.exception.exception import customexception
 from keras.models import load_model
-import keras
 from keras.src.layers.preprocessing.string_lookup import StringLookup
 from src.ocr_captcha.utils.utils import build_model, generate_image_id, encode_single_sample_testing, decode_batch_predictions
-import numpy as np
-from pathlib import Path
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 
 class PredictionPipline:
     def __init__(self, model_path):
         self.model_path = model_path
+    
     def predict(self, img):
         try:
             with open(Path("artifact/char_to_num.json"), "r") as json_file:
