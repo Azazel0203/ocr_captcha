@@ -5,6 +5,7 @@ pandas
 tensorflow
 keras
 pillow
+flask
 # mlflow
 # dvc
 # pendulum
