@@ -1,4 +1,3 @@
-
 # OCR Captcha Project
 
 This project implements an Optical Character Recognition (OCR) system for solving CAPTCHA challenges. It consists of several modules for data ingestion, model training, and inference. The system is designed to recognize characters in images and produce corresponding text predictions.
